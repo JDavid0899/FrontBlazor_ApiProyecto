@@ -76,3 +76,4 @@ C:\Users\jesus\OneDrive\Documentos\Ingenieria Sistemas\ASW\FrontBlazor_ApiProyec
 C:\Users\jesus\OneDrive\Documentos\Ingenieria Sistemas\ASW\FrontBlazor_ApiProyecto\obj\Debug\net9.0\FrontBlazor_ApiProyecto.pdb
 C:\Users\jesus\OneDrive\Documentos\Ingenieria Sistemas\ASW\FrontBlazor_ApiProyecto\obj\Debug\net9.0\FrontBlazor_ApiProyecto.genruntimeconfig.cache
 C:\Users\jesus\OneDrive\Documentos\Ingenieria Sistemas\ASW\FrontBlazor_ApiProyecto\obj\Debug\net9.0\ref\FrontBlazor_ApiProyecto.dll
+C:\Users\jesus\OneDrive\Documentos\Ingenieria Sistemas\ASW\FrontBlazor_ApiProyecto\obj\Debug\net9.0\FrontBlazor_ApiProyecto.sourcelink.json

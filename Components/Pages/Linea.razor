@@ -40,7 +40,7 @@
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label class="form-label">Codigo</label>
-                        <input class="form-control" @bind="campoCodigo" disabled="@editando" />
+                        <input class="form-control" @bind="campoCodigo" disabled="true" />
                     </div>
                     <div class="col-md-4 mb-3">
                         <label class="form-label">Nombre</label>
@@ -67,6 +67,26 @@
         </div>
     }
 
+    @* ───────── CONFIRMACIÓN DE ELIMINAR ───────── *@
+    @if (confirmacion)
+    {
+        <div class="alert alert-warning d-flex justify-content-between align-items-center">
+
+            <div>
+                ¿Seguro que deseas eliminar la línea
+                <strong>@nEliminar</strong>?
+            </div>
+
+            <div>
+                <button class="btn btn-danger btn-sm"
+                    @onclick="EliminarConfirmado">Si, Eliminar</button>
+                <button class="btn btn-secondary btn-sm"
+                    @onclick="CancelarEliminar">Cancelar</button>
+            </div>
+
+        </div>
+    }
+
     @* ───────── TABLA ───────── *@
     @if (!cargando && registros.Any())
     {
@@ -90,7 +110,7 @@
                             <button class="btn btn-warning btn-sm me-1"
                                     @onclick="() => EditarRegistro(reg)">Editar</button>
                             <button class="btn btn-danger btn-sm"
-                                    @onclick="() => EliminarRegistro(reg)">Eliminar</button>
+                                    @onclick="() => SolicitarEliminar(reg)">Eliminar</button>
                         </td>
                     </tr>
                 }
@@ -117,6 +137,11 @@
     private string campoNombre = string.Empty;
     private string campoDesc = string.Empty;
     private int? limite = null;
+
+    // Campos Confirmación
+    private bool confirmacion = false;
+    private string idEliminar = string.Empty;
+    private string nEliminar = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -179,6 +204,26 @@
         }
     }
 
+    private void SolicitarEliminar(Dictionary<string, object?> reg)
+    {
+        idEliminar = reg["id"]?.ToString() ?? "";
+        nEliminar = reg["nombre"]?.ToString() ?? "";
+        confirmacion = true;
+    }
+
+    private async Task EliminarConfirmado()
+    {
+        var resultado = await Api.EliminarAsync("linea_investigacion", "id",idEliminar);
+
+        exito = resultado.exito;
+        mensaje = resultado.mensaje;
+
+        confirmacion = false;
+
+        if (exito)
+            await CargarRegistros();
+    }
+
     private async Task EliminarRegistro(Dictionary<string, object?> reg)
     {
         string codigo = reg["id"]?.ToString() ?? "";
@@ -193,6 +238,12 @@
     private void Cancelar()
     {
         mostrarFormulario = false;
+        mensaje = string.Empty;
+    }
+
+    private void CancelarEliminar()
+    {
+        confirmacion = false;
         mensaje = string.Empty;
     }
 }
