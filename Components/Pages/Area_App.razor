@@ -1,11 +1,11 @@
-﻿@page "/linea"
+﻿@page "/area_app"
 @rendermode InteractiveServer
 @inject FrontBlazor_ApiProyecto.Services.ApiService Api
 
-<PageTitle>Lineas de Investigacion</PageTitle>
+<PageTitle>Areas de Aplicacion</PageTitle>
 
 <div class="container mt-4">
-    <h3>Lineas</h3>
+    <h3>Area</h3>
 
     @* ───────── ALERTA ───────── *@
     @if (!string.IsNullOrEmpty(mensaje))
@@ -19,7 +19,7 @@
     @* ───────── BOTON NUEVO ───────── *@
     @if (!mostrarFormulario)
     {
-        <button class="btn btn-primary mb-3" @onclick="NuevoRegistro">Nueva Linea</button>
+        <button class="btn btn-primary mb-3" @onclick="NuevoRegistro">Nueva Area de Aplicacion</button>
     }
 
     @* ───────── LIMITE DE REGISTROS ───────── *@
@@ -34,21 +34,17 @@
     {
         <div class="card mb-3">
             <div class="card-header">
-                @(editando ? "Editar Linea" : "Nueva Linea")
+                @(editando ? "Editar Area" : "Nueva Area")
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label class="form-label">Codigo</label>
-                        <input class="form-control" @bind="campoCodigo" disabled="true" />
+                        <input class="form-control" @bind="campoCodigo" disabled="@editando" />
                     </div>
                     <div class="col-md-4 mb-3">
                         <label class="form-label">Nombre</label>
                         <input class="form-control" @bind="campoNombre" />
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Descripcion</label>
-                        <input class="form-control" @bind="campoDesc" />
                     </div>
                 </div>
                 <button class="btn btn-success me-2" @onclick="GuardarRegistro">Guardar</button>
@@ -73,7 +69,7 @@
         <div class="alert alert-warning d-flex justify-content-between align-items-center">
 
             <div>
-                ¿Seguro que deseas eliminar la línea
+                ¿Seguro que deseas eliminar el Area
                 <strong>@nEliminar</strong>?
             </div>
 
@@ -95,7 +91,6 @@
                 <tr>
                     <th>Codigo</th>
                     <th>Nombre</th>
-                    <th>Descripcion</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -105,7 +100,6 @@
                     <tr>
                         <td>@reg["id"]</td>
                         <td>@reg["nombre"]</td>
-                        <td>@reg["descripcion"]</td>
                         <td>
                             <button class="btn btn-warning btn-sm me-1"
                                     @onclick="() => EditarRegistro(reg)">Editar</button>
@@ -120,7 +114,7 @@
 
     @if (!cargando && !registros.Any())
     {
-        <div class="alert alert-warning">No se encontraron registros en la tabla lineas.</div>
+        <div class="alert alert-warning">No se encontraron registros en la tabla empresa.</div>
     }
 </div>
 
@@ -135,7 +129,6 @@
     // Campos del formulario
     private string campoCodigo = string.Empty;
     private string campoNombre = string.Empty;
-    private string campoDesc = string.Empty;
     private int? limite = null;
 
     // Campos Confirmación
@@ -151,7 +144,7 @@
     private async Task CargarRegistros()
     {
         cargando = true;
-        registros = await Api.ListarAsync("linea_investigacion", limite);
+        registros = await Api.ListarAsync("area_aplicacion", limite);
         cargando = false;
     }
 
@@ -160,7 +153,6 @@
         editando = false;
         campoCodigo = string.Empty;
         campoNombre = string.Empty;
-        campoDesc = string.Empty;
         mostrarFormulario = true;
         mensaje = string.Empty;
     }
@@ -170,7 +162,6 @@
         editando = true;
         campoCodigo = reg["id"]?.ToString() ?? "";
         campoNombre = reg["nombre"]?.ToString() ?? "";
-        campoDesc = reg["descripcion"]?.ToString() ?? "";
         mostrarFormulario = true;
         mensaje = string.Empty;
     }
@@ -179,20 +170,20 @@
     {
         var datos = new Dictionary<string, object?>
         {
+            ["id"] = campoCodigo,
             ["nombre"] = campoNombre,
-            ["descripcion"] = campoDesc
         };
 
         if (editando)
         {
             datos.Remove("id");
-            var resultado = await Api.ActualizarAsync("linea_investigacion", "id", campoCodigo, datos);
+            var resultado = await Api.ActualizarAsync("area_aplicacion", "id", campoCodigo, datos);
             exito = resultado.exito;
             mensaje = resultado.mensaje;
         }
         else
         {
-            var resultado = await Api.CrearAsync("linea_investigacion", datos);
+            var resultado = await Api.CrearAsync("area_aplicacion", datos);
             exito = resultado.exito;
             mensaje = resultado.mensaje;
         }
@@ -213,7 +204,7 @@
 
     private async Task EliminarConfirmado()
     {
-        var resultado = await Api.EliminarAsync("linea_investigacion", "id",idEliminar);
+        var resultado = await Api.EliminarAsync("area_aplicacion", "id",idEliminar);
 
         exito = resultado.exito;
         mensaje = resultado.mensaje;
@@ -227,7 +218,7 @@
     private async Task EliminarRegistro(Dictionary<string, object?> reg)
     {
         string codigo = reg["id"]?.ToString() ?? "";
-        var resultado = await Api.EliminarAsync("linea_investigacion", "id", codigo);
+        var resultado = await Api.EliminarAsync("area_aplicacion", "id", codigo);
         exito = resultado.exito;
         mensaje = resultado.mensaje;
 
